@@ -73,11 +73,7 @@ const verifyOtp=async(req,res)=>{
         res.status(500).json({
             message:"Internal Server Error"
         })
-        if (err.code === 11000) {
-            return res.status(400).json({
-                message: "User already exists"
-            });
-        }
+        
     }
 }
 
@@ -122,10 +118,67 @@ const deleteUser=async(req,res)=>{
     })
 }
 
+const userLogin=async(req,res)=>{
+    const {email,password}=req.body;
+    try{
+        const user=await userModel.findOne({email});
+        if (!user) {
+            return res.status(400).json({
+                message: "Invalid Credentials"
+            });
+        }
+         // compare hashed password
+                const isMatch = await bcrypt.compare(password, user.password);
+
+                if (!isMatch) {
+                    return res.status(400).json({
+                        message: "Invalid Credentials"
+                    });
+                }
+                //creating jwt token
+                const token = jwt.sign({ id: user._id, email: user.email, role: user.role}, process.env.SECRET_KEY, {
+                    expiresIn: '7d'
+                });
+
+                res.status(200).json({
+                    message:"Login Successfull",
+                    data:user,
+                    token
+                })
+    }catch(err){
+        res.status(500).json({
+            message:"Internal Server Error"
+        })
+    }
+}
+
+const veryfyToken=(req,res,next)=>{
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({
+            message: "No token provided"
+        });
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        res.status(401).json({
+            message: "Invalid token"
+        });
+    }
+}
+
 module.exports={
     addUser,
     verifyOtp,
     userList,
     updateUser,
-    deleteUser
+    deleteUser,
+    userLogin
 }
