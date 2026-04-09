@@ -10,6 +10,9 @@ const addTask = async (req, res) => {
             status: status || 'todo',
             userId: req.user.id  // comes from verifyToken middleware
         });
+        //  Emit task-created event
+    const io = req.app.get("io");
+    io.emit("task-created", task); // everyone gets it
         res.status(201).json({ success: true, message: 'Task created', data: task });
     } catch (err) {
         res.status(500).json({ message: 'Internal Server Error' });
@@ -49,6 +52,10 @@ const updateTask = async (req, res) => {
         task.status = status;
         await task.save();
 
+        // Emit event to all clients
+    const io = req.app.get("io");
+    io.emit("task-updated", task); // emit the updated task
+
         res.status(200).json({ success: true, message: 'Task updated successfully' });
     } catch (err) {
         res.status(500).json({ message: 'Internal Server Error' });
@@ -60,6 +67,9 @@ const deleteTask = async (req, res) => {
     try {
         const task = await taskModel.findOneAndDelete({ _id: req.params.id, userId: req.user.id });
         if (!task) return res.status(404).json({ message: 'Task not found' });
+        // Emit task-deleted event
+    const io = req.app.get("io");
+    io.emit("task-deleted", task._id); // emit the deleted task's id
         res.status(200).json({ success: true, message: 'Task deleted successfully' });
     } catch (err) {
         res.status(500).json({ message: 'Internal Server Error' });
