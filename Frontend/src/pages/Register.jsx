@@ -9,31 +9,37 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    fetch(`${API_URL}/user/addUser`,{
-      method:'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username,email,password})
-    })
-    .then((res)=>res.json())
-    .then((data)=> {
-      if (!data) {
-        console.error('Error adding user:', data.message);
-      }
-      setName('');
-      setEmail('');
-      setPassword('');
-      console.log('user added successfully')
+  const handleSubmit = async (event) => {
+  event.preventDefault();
 
-      navigate('/emailVerification', { state: { email: email } });
-      
-      
-      
-    
-    })
-    .catch(err => console.error(err));
-  };
+  try {
+    const res = await fetch(`${API_URL}/user/addUser`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      // Backend returned error (like 400)
+      alert(data.message || 'Registration failed');
+      return; // stop execution
+    }
+
+    // Registration successful
+    setName('');
+    setEmail('');
+    setPassword('');
+    console.log('User added successfully');
+
+    navigate('/emailVerification', { state: { email } });
+
+  } catch (err) {
+    console.error('Error:', err);
+    alert('Something went wrong. Please try again.');
+  }
+};
 
 
     return (
