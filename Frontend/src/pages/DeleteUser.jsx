@@ -30,6 +30,8 @@ const DeleteUser = () => {
       });
   }, [id]);
 
+
+  // Handle user deletion
   const handleDelete = async () => {
     setDeleting(true);
     const token = localStorage.getItem('token');

@@ -3,11 +3,16 @@ import { API_URL } from "../../api";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
+
+// Define status and priority colors
 const STATUS_COLORS = {
   todo: "bg-gray-100 text-gray-700",
   "in-progress": "bg-yellow-100 text-yellow-700",
   done: "bg-green-100 text-green-700",
 };
+
+
+// Define status and priority colors
 const PRIORITY_COLORS = {
   low: "bg-blue-100 text-blue-700",
   medium: "bg-purple-100 text-purple-700",
@@ -15,26 +20,26 @@ const PRIORITY_COLORS = {
 };
 
 const Dashboard = () => {
-  const [tasks, setTasks] = useState([]);
-  const [loadingTasks, setLoadingTasks] = useState(true);
-  const [error, setError] = useState(null);
+  const [tasks, setTasks] = useState([]);  // <-- tasks
+  const [loadingTasks, setLoadingTasks] = useState(true);  // <-- loading
+  const [error, setError] = useState(null);  // <-- error
 
-  const [showTaskForm, setShowTaskForm] = useState(false);
-  const [editingTask, setEditingTask] = useState(null);
-  const [taskTitle, setTaskTitle] = useState("");
-  const [taskDescription, setTaskDescription] = useState("");
-  const [taskStatus, setTaskStatus] = useState("todo");
-  const [taskPriority, setTaskPriority] = useState("medium");
-  const [taskSaving, setTaskSaving] = useState(false);
+  const [showTaskForm, setShowTaskForm] = useState(false);  // <-- form
+  const [editingTask, setEditingTask] = useState(null); // <-- edit
+  const [taskTitle, setTaskTitle] = useState("");  // <-- title
+  const [taskDescription, setTaskDescription] = useState(""); // <-- description
+  const [taskStatus, setTaskStatus] = useState("todo");  // <-- status
+  const [taskPriority, setTaskPriority] = useState("medium");  // <-- priority
+  const [taskSaving, setTaskSaving] = useState(false);  // <-- saving
 
   const [filterStatus, setFilterStatus] = useState("all"); // <-- filter
 
-  const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const navigate = useNavigate();  // <-- navigation
+  const token = localStorage.getItem("token");  // logged-in user token
   const user = JSON.parse(localStorage.getItem("user")); // logged-in user info
   const userId = user?._id;
 
-  const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState(null);   // <-- socket
 
   // Initialize Socket.io
   useEffect(() => {
@@ -76,12 +81,16 @@ const Dashboard = () => {
 
   // Real-time Socket.io listeners
   useEffect(() => {
-    if (!socket) return;
+    if (!socket) return;  // no socket
 
+
+    // Socket.io listeners
     socket.on("task-created", (task) => {
-      if (task.userId === userId) setTasks((prev) => [task, ...prev]);
+      if (task.userId === userId) setTasks((prev) => [task, ...prev]); 
     });
 
+
+    // Socket.io listeners
     socket.on("task-updated", (updatedTask) => {
       if (updatedTask.userId === userId) {
         setTasks((prev) =>
@@ -90,6 +99,8 @@ const Dashboard = () => {
       }
     });
 
+
+    // Socket.io listeners
     socket.on("task-deleted", (deletedTaskId) => {
       setTasks((prev) => prev.filter((t) => t._id !== deletedTaskId));
     });
@@ -101,12 +112,16 @@ const Dashboard = () => {
     };
   }, [socket, userId]);
 
+
+  // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
   };
 
+
+  // Open add/edit task form
   const openAddTask = () => {
     setEditingTask(null);
     setTaskTitle("");
@@ -116,6 +131,8 @@ const Dashboard = () => {
     setShowTaskForm(true);
   };
 
+
+  // Open edit task form
   const openEditTask = (task) => {
     setEditingTask(task);
     setTaskTitle(task.title);
@@ -125,14 +142,17 @@ const Dashboard = () => {
     setShowTaskForm(true);
   };
 
+
+
+  // Handle task form submit
   const handleTaskSubmit = async (e) => {
     e.preventDefault();
     setTaskSaving(true);
     const isEditing = !!editingTask;
     const url = isEditing
       ? `${API_URL}/api/tasks/updateTask/${editingTask._id}`
-      : `${API_URL}/api/tasks/addTask`;
-    const method = isEditing ? "PUT" : "POST";
+      : `${API_URL}/api/tasks/addTask`;   // <-- url
+    const method = isEditing ? "PUT" : "POST";  // <-- method
 
     try {
       const res = await fetch(url, {

@@ -9,6 +9,8 @@ function EmailVerification() {
   const { email } = location.state || {};
   const [otp, setOtp] = useState('');
 
+
+  // Handle OTP verification
   const handleVerify = () => {
     fetch(`${API_URL}/api/users/verifyOtp`, {
       method: 'POST',

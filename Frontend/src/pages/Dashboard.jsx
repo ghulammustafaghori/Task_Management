@@ -8,6 +8,9 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+
+  // Fetch users
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -35,17 +38,25 @@ const Dashboard = () => {
       });
   }, [navigate]);
 
+
+
+  // Handle user actions
   const handleEdit = (userId) => {
   navigate(`/editUser/${userId}`);
 };
 
+
+
+// Handle user deletion
 const handleDelete = (userId) => {
   navigate(`/deleteUser/${userId}`);
 };
 
+
+// Handle logout
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user'); // optional
+    localStorage.removeItem('token'); // remove token
+    localStorage.removeItem('user');
     navigate('/login');
   };
 
@@ -53,6 +64,8 @@ const handleDelete = (userId) => {
   if (error) return <div>Error: {error}</div>;
 
   return (
+
+    // Dashboard
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold mb-6">All Users</h1>

@@ -32,6 +32,8 @@ const EditUser = () => {
       });
   }, [id]);
 
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -55,6 +57,7 @@ const EditUser = () => {
       setSaving(false);
     }
   };
+
 
   if (loading) return <div className="p-6">Loading user...</div>;
 
