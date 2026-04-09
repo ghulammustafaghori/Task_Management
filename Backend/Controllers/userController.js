@@ -5,7 +5,7 @@ const sendOtpEmail = require('../utility/mailer');
 
 
 const generateOtp=()=>{
-    return Math.floor(10000 + Math.random() * 90000).toString(); //6 digit
+    return Math.floor(100000 + Math.random() * 90000).toString(); //6 digit
 }
 
 const addUser=  async (req,res)=>{
@@ -36,6 +36,7 @@ const addUser=  async (req,res)=>{
 
         await sendOtpEmail(email, otp);
        res.status(201).json({
+            success: true,
             message: "User registered. Please verify OTP sent to email."
         });
 
@@ -55,21 +56,34 @@ const verifyOtp=async(req,res)=>{
                 message:"User not found"
             })
         }
-        if(user.otp!==otp){
-            return res.status(400).json({
-                message:"Invalid OTP"
-            })
-        }
+
         if(user.otpExpiresAt<new Date()){
             return res.status(400).json({
+                success:false,
                 message:"OTP expired"
             })
         }
+        
+        if(user.otp.toString() !== otp.toString()){
+            return res.status(400).json({
+                success:false,
+                message:"Invalid OTP"
+            })
+        }
+
+        if (user.otp.toString().trim() !== otp.toString().trim()) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid OTP, please try again"
+            });
+        } 
+        
         user.isVerified=true;
         user.otp = null;
         user.otpExpiresAt = null;
         await user.save();
         res.status(200).json({
+            success:true,
             message:"User verified successfully"
         })
     }catch(err){

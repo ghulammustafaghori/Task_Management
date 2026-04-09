@@ -1,26 +1,52 @@
 import React from 'react'
+import {useState} from 'react'
+import { API_URL } from '../api'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 function EmailVerification() {
-    return (
-    <div className="flex justify-center items-center h-screen bg-blue-100">
-  <form className="w-100 p-10 rounded-2xl bg-white shadow-lg">
-    <h1 className="text-3xl font-bold text-center">Verify OTP</h1>
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { email } = location.state || {};
+  const [otp, setOtp] = useState('');
 
-    {/* Email Field */}
-    <div className="mt-10">
-      <label className="text-xl">Email</label><br/>
-      <input
-        className="border w-80 rounded-lg h-8 border-gray-400 p-2 bg-gray-200"
-        type="email"
-        placeholder="Enter your email"
-      />
+  const handleVerify = () => {
+    fetch(`${API_URL}/user/verifyOtp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        console.log('Email verified!');
+        // redirect to login or dashboard
+        navigate('/dashboard');
+      } else {
+        console.error('Invalid OTP');
+      }
+    });
+  };
+
+
+
+    return (
+    <div className="flex justify-center items-center min-h-screen bg-blue-100 p-4">
+  <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+    {/* Title */}
+    <h1 className="text-3xl font-bold text-center mb-6">Verify OTP</h1>
+
+    {/* Email Info */}
+    <div className="mb-6 text-center">
+      <p className="text-gray-700">Verify Email for <span className="font-semibold">{email}</span></p>
     </div>
 
     {/* OTP Field */}
-    <div className="mt-5">
-      <label className="text-xl">OTP</label><br/>
+    <div className="mb-6">
+      <label className="block text-xl font-medium mb-2">OTP</label>
       <input
-        className="border w-80 rounded-lg h-8 border-gray-400 p-2 bg-gray-200"
+        value={otp}
+        onChange={e => setOtp(e.target.value)}
+        className="w-full border border-gray-400 rounded-lg h-12 p-3 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
         type="text"
         placeholder="Enter the OTP"
       />
@@ -29,12 +55,13 @@ function EmailVerification() {
     {/* Verify Button */}
     <div>
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-5 rounded-full px-10"
+        onClick={handleVerify}
+        className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 rounded-full transition-colors duration-200"
       >
         Verify OTP
       </button>
     </div>
-  </form>
+  </div>
 </div>
     )
 }
