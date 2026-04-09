@@ -1,5 +1,6 @@
 import React from 'react'
-
+import { Link } from 'react-router-dom'
+import Login from './Login'
 function Register() {
     return (
        <div className="flex justify-center items-center h-screen bg-blue-100">
@@ -33,13 +34,14 @@ function Register() {
       />
     </div>
 
-    <div>
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-5 rounded-full px-10"
-      >
-        Register
-      </button>
-    </div>
+    <div className="flex justify-between items-center mt-5">
+  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-10 rounded-full">
+    Register
+  </button>
+  <Link to="/login" className="text-blue-500 font-bold hover:underline flex items-center h-full pr-2">
+    Login
+  </Link>
+</div>
   </form>
 </div>
     )
