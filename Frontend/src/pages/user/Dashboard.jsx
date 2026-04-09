@@ -40,12 +40,11 @@ const Dashboard = () => {
   const userId = user?._id;
 
   const [socket, setSocket] = useState(null);   // <-- socket
-
   // Initialize Socket.io
   useEffect(() => {
     if (!token) return;
 
-    const newSocket = io("http://localhost:5000", {
+    const newSocket = io(API_URL, {
       auth: { token },
     });
     setSocket(newSocket);
