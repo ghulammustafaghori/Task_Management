@@ -2,8 +2,13 @@ const express = require('express');
 const dotenv=require('dotenv');
 dotenv.config(); // ✅ load env first
 const connectDB=require('./config/db');
+const adminRoutes=require('./Routes/adminRoutes');
 
 const app=express();
+
+app.use(express.json());
+
+app.use('/admin',adminRoutes);
 
 const startServer=async()=>{
     try{
