@@ -102,37 +102,40 @@ const userList= async(req,res)=>{
     })
 }
 
-const updateUser=async(req,res)=>{
-    const id=req.params.id;
-    const {username,email,password,isVerified}=req.body;
-    const user= await userModel.findById(id);
-    if(!user){
-        return res.status(404).json({
-            message:"User not found"
-        })
+const updateUser = async (req, res) => {
+    try {
+        const { username, email, password, isVerified } = req.body;
+        const user = await userModel.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.username = username;
+        user.email = email;
+        user.isVerified = isVerified;
+
+        // Only update password if a new one is provided
+        if (password) {
+            user.password = await bcrypt.hash(password, 10);
+        }
+
+        await user.save(); // was missing await
+        res.status(200).json({ message: "User updated successfully" });
+    } catch (err) {
+        res.status(500).json({ message: "Internal Server Error" });
     }
-    user.username=username;
-    user.email=email;
-    user.password=password;
-    user.isVerified=isVerified;
-    user.save();
-    res.status(200).json({
-        message:"User updated successfully"
-    })
 }
 
-const deleteUser=async(req,res)=>{
-    const id=req.params.id;
-    const user=await userModel.findById(id);
-    if(!user){
-        return res.status(404).json({
-            message:"User not found"
-        })
+const deleteUser = async (req, res) => {
+    try {
+        const user = await userModel.findByIdAndDelete(req.params.id); // replaces deprecated user.remove()
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({ message: "User deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ message: "Internal Server Error" });
     }
-    user.remove();
-    res.status(200).json({
-        message:"User deleted successfully"
-    })
 }
 
 const userLogin=async(req,res)=>{
@@ -169,6 +172,21 @@ const userLogin=async(req,res)=>{
     }
 }
 
+const getSingleUser = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({
+            success: true,
+            data: user
+        });
+    } catch (err) {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
 const veryfyToken=(req,res,next)=>{
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -197,5 +215,6 @@ module.exports={
     userList,
     updateUser,
     deleteUser,
-    userLogin
+    userLogin,
+    getSingleUser
 }

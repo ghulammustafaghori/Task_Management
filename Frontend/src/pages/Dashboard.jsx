@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { API_URL } from '../api';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${API_URL}/user/userList`)
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login'); // redirect if not logged in
+      return;
+    }
+
+    fetch(`${API_URL}/user/userList`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch users');
         return res.json();
@@ -22,16 +33,20 @@ const Dashboard = () => {
         setError(err.message);
         setLoading(false);
       });
-  }, []);
+  }, [navigate]);
 
   const handleEdit = (userId) => {
-    console.log('Edit user', userId);
-    // Add your edit logic here
-  };
+  navigate(`/editUser/${userId}`);
+};
 
-  const handleDelete = (userId) => {
-    console.log('Delete user', userId);
-    // Add your delete logic here
+const handleDelete = (userId) => {
+  navigate(`/deleteUser/${userId}`);
+};
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user'); // optional
+    navigate('/login');
   };
 
   if (loading) return <div>Loading users...</div>;
@@ -40,10 +55,23 @@ const Dashboard = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-      <h1 className="text-2xl font-bold mb-6">All Users</h1>
-      {/* add user button */}
-      <Link to='/addUser' className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 rounded-full px-10">Add User</Link>
-</div>
+        <h1 className="text-2xl font-bold mb-6">All Users</h1>
+        <div className="space-x-4">
+          <Link
+            to="/addUser"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+          >
+            Add User
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+
       {users.length === 0 ? (
         <p>No users found.</p>
       ) : (
@@ -54,7 +82,7 @@ const Dashboard = () => {
                 <th className="text-left px-4 py-2 border-b">#</th>
                 <th className="text-left px-4 py-2 border-b">Username</th>
                 <th className="text-left px-4 py-2 border-b">Email</th>
-                <th className="text-left px-4 py-2 border-b">Status</th>
+                {/* <th className="text-left px-4 py-2 border-b">Status</th> */}
                 <th className="text-left px-4 py-2 border-b">Actions</th>
               </tr>
             </thead>
@@ -64,16 +92,16 @@ const Dashboard = () => {
                   <td className="px-4 py-2 border-b">{index + 1}</td>
                   <td className="px-4 py-2 border-b">{user.username}</td>
                   <td className="px-4 py-2 border-b">{user.email}</td>
-                  <td className="px-4 py-2 border-b">{user.isVerified ? 'Verified' : 'Not Verified'}</td>
+                  {/* <td className="px-4 py-2 border-b">{user.isVerified ? 'Verified' : 'Not Verified'}</td> */}
                   <td className="px-4 py-2 border-b space-x-2">
                     <button
-                      onClick={() => handleEdit(user.id)}
+                      onClick={() => handleEdit(user._id)}
                       className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                     >
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(user.id)}
+                      onClick={() => handleDelete(user._id)}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
                       Delete

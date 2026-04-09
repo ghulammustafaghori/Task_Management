@@ -23,11 +23,13 @@ const AddUser = () => {
         body: JSON.stringify({ username, email, password }), // include password
       });
       if (!res.ok) throw new Error('Failed to add user');
-      await res.json();
+      
       setLoading(false);
       navigate('/dashboard'); // go back to dashboard
     } catch (err) {
       setError(err.message);
+      
+    } finally {
       setLoading(false);
     }
   };
