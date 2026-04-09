@@ -3,11 +3,12 @@ const taskModel = require('../models/taskModel');
 // Add Task
 const addTask = async (req, res) => {
     try {
-        const { title, description, status } = req.body;
+        const { title, description, status, priority } = req.body;
         const task = await taskModel.create({
             title,
             description,
             status: status || 'todo',
+            priority: priority || 'medium',
             userId: req.user.id  // comes from verifyToken middleware
         });
         //  Emit task-created event
@@ -43,13 +44,14 @@ const getTask = async (req, res) => {
 // Update Task
 const updateTask = async (req, res) => {
     try {
-        const { title, description, status } = req.body;
+        const { title, description, status, priority } = req.body;
         const task = await taskModel.findOne({ _id: req.params.id, userId: req.user.id });
         if (!task) return res.status(404).json({ message: 'Task not found' });
 
         task.title = title;
         task.description = description;
         task.status = status;
+        task.priority = priority;
         await task.save();
 
         // Emit event to all clients
