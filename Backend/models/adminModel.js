@@ -1,5 +1,7 @@
 const mongoose=require('mongoose');
 
+
+//admin schema
 const adminSchema= new mongoose.Schema({
     email:{
         type: String,
@@ -16,6 +18,8 @@ const adminSchema= new mongoose.Schema({
     }
 })
 
+
+//admin model
 const adminModel= mongoose.model('admin', adminSchema);
 
 module.exports=adminModel;

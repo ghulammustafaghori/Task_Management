@@ -11,17 +11,19 @@ const taskRoutes=require('./Routes/taskRoutes');
 
 const app=express();
 const server = createServer(app);
+
+// create a new socket.io server
 const io = new Server(server, {
   cors: {
     origin: 'http://localhost:5173', // your frontend
     methods: ['GET', 'POST'],
     credentials: true
   }
-});
+}); 
 
-app.use(cors());
+app.use(cors());  // to allow cross-origin requests
 
-app.use(express.json());
+app.use(express.json());  // to parse JSON data
 
 
 io.on('connection',(socket)=>{
@@ -31,13 +33,16 @@ socket.on('disconnect',(socket)=>{
 })
 })
 
-app.use('/api',adminRoutes);
-app.use('/api/users',userRoutes);
-app.use('/api/tasks',taskRoutes);
+app.use('/api',adminRoutes);         // to use adminRoutes
+app.use('/api/users',userRoutes);    // to use userRoutes
+app.use('/api/tasks',taskRoutes);    // to use taskRoutes
 
 
-app.set('io',io);
+app.set('io',io);       // to set the socket.io instance
 
+
+
+// start the server
 const startServer=async()=>{
     try{
         await connectDB();

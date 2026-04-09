@@ -3,11 +3,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sendOtpEmail = require('../utility/mailer');
 
-
+//generate otp
 const generateOtp=()=>{
     return Math.floor(100000 + Math.random() * 90000).toString(); //6 digit
 }
 
+
+//add user
 const addUser=  async (req,res)=>{
     const {username,email,password}=req.body;
 
@@ -47,6 +49,8 @@ const addUser=  async (req,res)=>{
     }
 }
 
+
+//verify otp
 const verifyOtp=async(req,res)=>{
     const {email,otp}=req.body;
     try{
@@ -94,6 +98,8 @@ const verifyOtp=async(req,res)=>{
     }
 }
 
+
+//user list
 const userList= async(req,res)=>{
     const users= await userModel.find();
     res.status(200).json({
@@ -102,6 +108,8 @@ const userList= async(req,res)=>{
     })
 }
 
+
+//update user
 const updateUser = async (req, res) => {
     try {
         const { username, email, password, isVerified } = req.body;
@@ -126,6 +134,8 @@ const updateUser = async (req, res) => {
     }
 }
 
+
+//delete user
 const deleteUser = async (req, res) => {
     try {
         const user = await userModel.findByIdAndDelete(req.params.id); // replaces deprecated user.remove()
@@ -138,6 +148,8 @@ const deleteUser = async (req, res) => {
     }
 }
 
+
+//user login
 const userLogin=async(req,res)=>{
     const {email,password}=req.body;
     try{
@@ -172,6 +184,8 @@ const userLogin=async(req,res)=>{
     }
 }
 
+
+//get single user
 const getSingleUser = async (req, res) => {
     try {
         const user = await userModel.findById(req.params.id);
@@ -187,6 +201,8 @@ const getSingleUser = async (req, res) => {
     }
 }
 
+
+//verify token
 const veryfyToken=(req,res,next)=>{
     const authHeader = req.headers.authorization;
     if (!authHeader) {

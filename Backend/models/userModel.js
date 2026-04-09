@@ -1,5 +1,7 @@
 const mongoose=require('mongoose');
 
+
+//user schema
 const userSchema= new mongoose.Schema({
     username:{
         type: String,
@@ -32,6 +34,8 @@ const userSchema= new mongoose.Schema({
 
 },{timestamps:true});
 
+
+//user model
 const userModel= mongoose.model('user', userSchema);
 
 module.exports=userModel;

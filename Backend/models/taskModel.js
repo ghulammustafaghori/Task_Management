@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+
+// task schema
 const taskSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -28,4 +30,6 @@ const taskSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+
+// task model
 module.exports = mongoose.model('Task', taskSchema);

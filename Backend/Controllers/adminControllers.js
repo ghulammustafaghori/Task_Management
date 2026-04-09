@@ -2,6 +2,9 @@ const adminModel= require('../models/adminModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+
+
+//admin login function
 const adminLogin=async(req,res)=>{
     const {email,password}=req.body;
     try{
@@ -38,6 +41,8 @@ const adminLogin=async(req,res)=>{
     }
 }
 
+
+//verify token
 const verifyToken=(req,res,next)=>{
     const authHeader = req.headers.authorization;
 
@@ -62,6 +67,8 @@ const token = authHeader.split(' ')[1];
     }
 }
 
+
+//add admin
 const addAdmin=async(req,res)=>{
     const {email,password}=req.body;
     try{
