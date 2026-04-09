@@ -12,10 +12,11 @@ const taskRoutes=require('./Routes/taskRoutes');
 const app=express();
 const server = createServer(app);
 
+
 // create a new socket.io server
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173', // your frontend
+    origin: '*', // your frontend
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -28,7 +29,7 @@ app.use(express.json());  // to parse JSON data
 
 io.on('connection',(socket)=>{
 console.log('new client connected',socket.id);
-socket.on('disconnect',(socket)=>{
+socket.on('disconnect',()=>{
     console.log('client disconnected',socket.id);
 })
 })
@@ -40,7 +41,7 @@ app.use('/api/tasks',taskRoutes);    // to use taskRoutes
 
 app.set('io',io);       // to set the socket.io instance
 
-
+const PORT = process.env.PORT || 5000;
 
 // start the server
 const startServer=async()=>{
@@ -50,8 +51,8 @@ const startServer=async()=>{
         app.get('/',(req,res)=>{
             res.send('Hello World');
         });
-         server.listen(5000, () => {
-            console.log('Server started on port 5000');
+         server.listen(PORT, () => {
+            console.log(`Server started on port ${PORT}`);
         });
     }catch(err){
         console.log(err);
