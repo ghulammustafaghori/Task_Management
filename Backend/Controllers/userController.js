@@ -1,6 +1,7 @@
 const userModel= require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const sendOtpEmail = require('../utility/mailer');
 
 
 const generateOtp=()=>{
@@ -32,6 +33,8 @@ const addUser=  async (req,res)=>{
             
         });
         console.log("OTP:", otp);
+
+        await sendOtpEmail(email, otp);
        res.status(201).json({
             message: "User registered. Please verify OTP sent to email."
         });
