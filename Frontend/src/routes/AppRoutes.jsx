@@ -5,6 +5,7 @@ import Login from '../pages/Login'
 import EmailVerification from '../pages/EmailVerification'
 import Register from '../pages/Register'
 import Dashboard from '../pages/Dashboard'
+import AddUser from '../pages/AddUser'
 
 const AppRoutes = () => {
   return (
@@ -13,6 +14,8 @@ const AppRoutes = () => {
       <Route path='/login' element={<Login />} />
       <Route path='/emailVerification' element={<EmailVerification />} />
       <Route path='/dashboard' element={<Dashboard />} />
+      <Route path='/addUser' element={<AddUser />} />
+
     </Routes>
   )
 }
