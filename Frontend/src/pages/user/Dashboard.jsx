@@ -52,7 +52,7 @@ const Dashboard = () => {
   const fetchTasks = async () => {
     setLoadingTasks(true);
     try {
-      const res = await fetch(`${API_URL}/task/myTasks`, {
+      const res = await fetch(`${API_URL}/api/tasks/myTasks`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch tasks");
@@ -130,8 +130,8 @@ const Dashboard = () => {
     setTaskSaving(true);
     const isEditing = !!editingTask;
     const url = isEditing
-      ? `${API_URL}/task/updateTask/${editingTask._id}`
-      : `${API_URL}/task/addTask`;
+      ? `${API_URL}/api/tasks/updateTask/${editingTask._id}`
+      : `${API_URL}/api/tasks/addTask`;
     const method = isEditing ? "PUT" : "POST";
 
     try {
@@ -160,7 +160,7 @@ const Dashboard = () => {
   const handleDeleteTask = async (taskId) => {
     if (!window.confirm("Delete this task?")) return;
     try {
-      const res = await fetch(`${API_URL}/task/deleteTask/${taskId}`, {
+      const res = await fetch(`${API_URL}/api/tasks/deleteTask/${taskId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

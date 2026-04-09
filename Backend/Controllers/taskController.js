@@ -23,7 +23,7 @@ const addTask = async (req, res) => {
 // Get all tasks for logged-in user
 const getMyTasks = async (req, res) => {
     try {
-        const tasks = await taskModel.find({ userId: req.user.id }).sort({ createdAt: -1 });
+        const tasks = await taskModel.find().sort({ createdAt: -1 });
         res.status(200).json({ success: true, data: tasks });
     } catch (err) {
         res.status(500).json({ message: 'Internal Server Error' });

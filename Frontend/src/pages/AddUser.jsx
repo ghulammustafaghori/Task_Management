@@ -17,7 +17,7 @@ const AddUser = () => {
     setError(null);
 
     try {
-      const res = await fetch(`${API_URL}/user/addUser`, {
+      const res = await fetch(`${API_URL}/api/users/addUser`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password }), // include password

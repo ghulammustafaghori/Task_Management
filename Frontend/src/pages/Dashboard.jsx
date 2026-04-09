@@ -15,7 +15,7 @@ const Dashboard = () => {
       return;
     }
 
-    fetch(`${API_URL}/user/userList`, {
+    fetch(`${API_URL}/api/users/userList`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -82,17 +82,20 @@ const handleDelete = (userId) => {
                 <th className="text-left px-4 py-2 border-b">#</th>
                 <th className="text-left px-4 py-2 border-b">Username</th>
                 <th className="text-left px-4 py-2 border-b">Email</th>
-                {/* <th className="text-left px-4 py-2 border-b">Status</th> */}
+                <th className="text-left px-4 py-2 border-b">Role</th>
+                <th className="text-left px-4 py-2 border-b">Joining Date</th>
                 <th className="text-left px-4 py-2 border-b">Actions</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user, index) => (
+                
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-4 py-2 border-b">{index + 1}</td>
                   <td className="px-4 py-2 border-b">{user.username}</td>
                   <td className="px-4 py-2 border-b">{user.email}</td>
-                  {/* <td className="px-4 py-2 border-b">{user.isVerified ? 'Verified' : 'Not Verified'}</td> */}
+                  <td className="px-4 py-2 border-b">{user.role}</td>
+                  <td className="px-4 py-2 border-b">{user.createdAt.split('T')[0]}</td>
                   <td className="px-4 py-2 border-b space-x-2">
                     <button
                       onClick={() => handleEdit(user._id)}

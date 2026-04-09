@@ -31,9 +31,9 @@ socket.on('disconnect',(socket)=>{
 })
 })
 
-app.use('/admin',adminRoutes);
-app.use('/user',userRoutes);
-app.use('/task',taskRoutes);
+app.use('/api',adminRoutes);
+app.use('/api/users',userRoutes);
+app.use('/api/tasks',taskRoutes);
 
 
 app.set('io',io);

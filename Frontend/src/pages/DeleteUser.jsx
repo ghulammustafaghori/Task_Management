@@ -13,7 +13,7 @@ const DeleteUser = () => {
   // Fetch user to show their name in confirmation
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch(`${API_URL}/user/getSingleUser/${id}`, {
+    fetch(`${API_URL}/api/users/getSingleUser/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => {
@@ -35,7 +35,7 @@ const DeleteUser = () => {
     const token = localStorage.getItem('token');
 
     try {
-      const res = await fetch(`${API_URL}/user/deleteUser/${id}`, {
+      const res = await fetch(`${API_URL}/api/users/deleteUser/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });

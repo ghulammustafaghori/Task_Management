@@ -10,7 +10,7 @@ function EmailVerification() {
   const [otp, setOtp] = useState('');
 
   const handleVerify = () => {
-    fetch(`${API_URL}/user/verifyOtp`, {
+    fetch(`${API_URL}/api/users/verifyOtp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, otp })

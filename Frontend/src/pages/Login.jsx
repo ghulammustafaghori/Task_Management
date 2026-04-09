@@ -28,7 +28,7 @@ function Login() {
 
     try {
       // Try user login first
-      let res = await fetch(`${API_URL}/user/userLogin`, {
+      let res = await fetch(`${API_URL}/api/users/userLogin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: emailOrUsername, password })
@@ -36,7 +36,7 @@ function Login() {
 
       // If user login fails, try admin login
       if (!res.ok) {
-        res = await fetch(`${API_URL}/admin/adminLogin`, {
+        res = await fetch(`${API_URL}/api/auth`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: emailOrUsername, password })

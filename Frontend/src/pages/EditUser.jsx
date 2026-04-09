@@ -14,7 +14,7 @@ const EditUser = () => {
   // Fetch existing user data
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch(`${API_URL}/user/getSingleUser/${id}`, {
+    fetch(`${API_URL}/api/users/getSingleUser/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => {
@@ -39,7 +39,7 @@ const EditUser = () => {
     const token = localStorage.getItem('token');
 
     try {
-      const res = await fetch(`${API_URL}/user/updateUser/${id}`, {
+      const res = await fetch(`${API_URL}/api/users/updateUser/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
