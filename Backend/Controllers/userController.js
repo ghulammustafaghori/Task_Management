@@ -29,12 +29,12 @@ const addUser=  async (req,res)=>{
             email,
             password:hashedPassword,
             otp,
-            otpExpiresAt: new Date(Date.now() + 5 * 60 * 1000) // 5 minutes
+            otpExpiresAt: new Date(Date.now() + 10 * 60 * 1000) // 5 minutes
             
         });
         console.log("OTP:", otp);
 
-        await sendOtpEmail(email, otp);
+        sendOtpEmail(email, otp).catch(err => console.error('Email error:', err));
        res.status(201).json({
             success: true,
             message: "User registered. Please verify OTP sent to email."
@@ -216,5 +216,6 @@ module.exports={
     updateUser,
     deleteUser,
     userLogin,
-    getSingleUser
+    getSingleUser,
+    veryfyToken
 }

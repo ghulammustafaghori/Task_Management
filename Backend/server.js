@@ -1,10 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv=require('dotenv');
-dotenv.config(); // ✅ load env first
+dotenv.config(); 
 const connectDB=require('./config/db');
 const adminRoutes=require('./Routes/adminRoutes');
 const userRoutes=require('./Routes/userRoutes');
+const taskRoutes=require('./Routes/taskRoutes');
 
 const app=express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 
 app.use('/admin',adminRoutes);
 app.use('/user',userRoutes);
+app.use('/task',taskRoutes);
 
 const startServer=async()=>{
     try{

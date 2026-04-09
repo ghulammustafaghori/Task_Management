@@ -20,7 +20,7 @@ function EmailVerification() {
       if (data.success) {
         console.log('Email verified!');
         // redirect to login or dashboard
-        navigate('/dashboard');
+        navigate('/login');
       } else {
         console.error('Invalid OTP');
       }

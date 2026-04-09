@@ -10,32 +10,64 @@ function Login() {
 
   const navigate = useNavigate();
 
+  // Decode JWT token to get role without any library
+  const decodeToken = (token) => {
+    try {
+      const base64Payload = token.split('.')[1];
+      const payload = atob(base64Payload);
+      return JSON.parse(payload);
+    } catch {
+      return null;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      const res = await fetch(`${API_URL}/admin/adminLogin`, {
+      // Try user login first
+      let res = await fetch(`${API_URL}/user/userLogin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: emailOrUsername, password })
       });
 
+      // If user login fails, try admin login
+      if (!res.ok) {
+        res = await fetch(`${API_URL}/admin/adminLogin`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailOrUsername, password })
+        });
+      }
+
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || 'Login failed');
-        setLoading(false);
+        setError(data.message || 'Invalid credentials');
         return;
       }
 
-      // Save token in localStorage
+      // Save token and user info
       localStorage.setItem('token', data.token);
-      
+      localStorage.setItem('user', JSON.stringify(data.data));
 
-      // Redirect to dashboard
-      navigate('/dashboard');
+      // Decode token directly to get role reliably
+      const decoded = decodeToken(data.token);
+      console.log('Decoded token:', decoded); // remove after testing
+
+      const role = decoded?.role;
+
+      if (role === 'admin') {
+        navigate('/dashboard');
+      } else if (role === 'user') {
+        navigate('/userDashboard');
+      } else {
+        // fallback — unknown role
+        setError('Unknown role. Please contact support.');
+      }
 
     } catch (err) {
       setError('Something went wrong. Please try again.');
